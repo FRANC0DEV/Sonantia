@@ -1,0 +1,19 @@
+{
+  "name": "sonantia-back",
+  "version": "1.0.0",
+  "description": "API para la aplicacion Sonantia, realizada con Express, Typescript y Swagger",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/An3cd0Ta/Sonantia_Back.git"
+  },
+  "author": "edgar-leiva",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/An3cd0Ta/Sonantia_Back/issues"
+  },
+  "homepage": "https://github.com/An3cd0Ta/Sonantia_Back#readme"
+}

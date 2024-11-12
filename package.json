@@ -2,9 +2,11 @@
   "name": "sonantia-back",
   "version": "1.0.0",
   "description": "API para la aplicacion Sonantia, realizada con Express, Typescript y Swagger",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon ./src/index.ts",
+    "start": "npm run build && node ./build/index.js",
+    "build": "rimraf ./build && tsc"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,24 @@
   "bugs": {
     "url": "https://github.com/An3cd0Ta/Sonantia_Back/issues"
   },
-  "homepage": "https://github.com/An3cd0Ta/Sonantia_Back#readme"
+  "homepage": "https://github.com/An3cd0Ta/Sonantia_Back#readme",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.9.0",
+    "dotenv": "16.4.5",
+    "nodemon": "^3.1.7",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.5.1",
+    "express": "4.21.1",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.11.4",
+    "zod": "^3.23.8"
+  }
 }

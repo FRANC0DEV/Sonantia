@@ -1,93 +1,100 @@
-import express, { Router, Response, Request, NextFunction } from 'express';
-import fs from 'fs/promises';
-import { createUserSqlParameters, seekUserSqlParameters, userTokenInfo } from '../models/userModels';
-import { createUserBodySchema, loginUserSchema } from '../schemas/userSchemas';
-import { imgUploader } from '../middleware/multerUploader';
-import { uploadProfilePhoto } from '../middleware/cloudinaryUploader';
-import { errorHandler } from '../middleware/errorHandler';
-import { hashPassword } from '../middleware/passwordHasher';
-import { createUser, seekUser } from '../middleware/databaseUploader';
-import { comparePassword } from '../middleware/passwordHasher';
-import { generateAccessToken,generateRefreshToken } from '../middleware/tokenhandler';
-import { successLauncher } from '../middleware/responseLauncher';
+import express, { Router } from 'express';
+import { imgUploader } from '../utils/index.utils';
+import { createNewUser, login } from '../controllers/userController';
 const userRouter: Router = express.Router();
 /*----Routing----*/
-userRouter.post(
-  '/create',
-  imgUploader.single('profile-photo'),
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      // Valida el cuerpo (metadata)
-      const body = createUserBodySchema.parse(req.body);
-      //hashear contraseña
-      const hashed_password = await hashPassword(body.password);
-      // subir photo a cloudinary, si es que existe
-      const photo_url = await uploadProfilePhoto(req,body);
-      //una vez la contrasena se hashea y se tiene la url de la photo, hacemos el guardado en mysql
-      const sqlParameters:createUserSqlParameters = {
-        username:body.username,
-        name:body.name,
-        email:body.email,
-        password_hash:hashed_password,
-        profile_photo_url:photo_url
-      }
-      // console.log(sqlParameters);//probar
-      // Almacenar metadata en BD,
-      await createUser(sqlParameters,req,res,next)
-    } catch (err: unknown) {
-      next(err); // Pasa el error al manejador de errores
-    } finally {
-      //   Limpia el archivo local
-      if (req.file) {
-        try {
-          await fs.unlink(req.file.path);
-          console.log('Local profile photo successfully deleted');
-        } catch (err) {
-          console.error('Error while deleting the file: ', err);
-        }
-      }
-    }
-  }
-);
+/*create endpoint*/
+userRouter.post('/create', imgUploader.single('profile-photo'), createNewUser);
+/**
+ * @swagger
+ * /api/users/create:
+ *   post:
+ *     summary: Crear una nueva cuenta
+ *     tags:
+ *       - Usuarios
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: nombre de usuario
+ *               name:
+ *                 type: string
+ *                 description: nombre del usuario
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: correo electronico del nuevo usuario
+ *               password:
+ *                 type: string
+ *                 description: contraseña del nuevo usuario
+ *               profile-photo:
+ *                 type: file
+ *                 description: Foto de perfil (opcional)
+ *     responses:
+ *       200:
+ *         description: Cuenta creada con éxito
+ *         content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: boolean
+ *                    example: false
+ *                  status:
+ *                    type: integer
+ *                    example: 200
+ *                  body:
+ *                    type: string
+ *                    example: "Cuenta creada con éxito"
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: boolean
+ *                    example: true
+ *                  status:
+ *                    type: integer
+ *                    example: 400
+ *                  body:
+ *                    type: array
+ *                    items:
+ *                      type: object
+ *                      properties:
+ *                        message:
+ *                          type: string
+ *                          example: "Email already used"
+ *       500:
+ *         description: Error interno en el servidor
+ *         content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: boolean
+ *                    example: true
+ *                  status:
+ *                    type: integer
+ *                    example: 500
+ *                  body:
+ *                    type: array
+ *                    items:
+ *                      type: object
+ *                      properties:
+ *                        message:
+ *                          type: string
+ *                          example: "Internal server error"
+ */
 
 /*Login endpoint*/
-userRouter.post(
-  '/login',
-  async (req:Request, res:Response, next:NextFunction)=>{
-    try {
-      //validate the body
-      const body = loginUserSchema.parse(req.body);
-      const parameters = body as seekUserSqlParameters;
-      //then we must see if the user exists or not
-      const result = await seekUser(parameters, req,res,next);
-      if(result.length===0){
-        throw new Error('Email or password incorrect, try again.')
-      }
-      const user = result[0];
-      //after that, we must check if the password is correct
-      const match = await comparePassword(body.password,user.password_hash);
-      if(!match){
-        throw new Error('Email or password incorrect, try again.')
-      }
-      //from here, email and password are correct
-      const userTokenInfo:userTokenInfo ={
-        username:user.username,
-        name:user.name,
-        email:user.email,
-        profile_photo_url:user.profile_photo_url,
-        preferences:{interface_color:user.interface_color,profile_border_color:user.profile_border_color},
-        roles: user.roles.split(', ')
-      }
-      const accesstoken = generateAccessToken(userTokenInfo);
-      const refreshtoken = generateRefreshToken(userTokenInfo);
-      successLauncher(req,res,JSON.stringify({accesstoken,refreshtoken}),200)
-    } catch (err) {
-      next(err);
-    }
-  }
-)
-
-// Middleware global de manejo de errores
-userRouter.use(errorHandler);
-
+userRouter.post('/login', login);
 export default userRouter;

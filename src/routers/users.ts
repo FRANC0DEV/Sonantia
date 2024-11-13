@@ -1,7 +1,7 @@
 import express, { Router, Response, Request, NextFunction } from 'express';
 import fs from 'fs/promises';
 import { createUserSqlParameters, seekUserSqlParameters } from '../models/userModels';
-import { createUserBodySchema } from '../schemas/userSchemas';
+import { createUserBodySchema, loginUserSchema } from '../schemas/userSchemas';
 import { imgUploader } from '../middleware/multerUploader';
 import { uploadProfilePhoto } from '../middleware/cloudinaryUploader';
 import { errorHandler } from '../middleware/errorHandler';
@@ -53,10 +53,11 @@ userRouter.post(
   '/login',
   async (req:Request, res:Response, next:NextFunction)=>{
     try {
-      //first we obtain the username and password from the user
-      const body:seekUserSqlParameters = req.body;
+      //validate the body
+      const body = loginUserSchema.parse(req.body);
+      const parameters = body as seekUserSqlParameters;
       //then we must see if the user exists or not
-      const result = await seekUser(body, req,res,next);
+      const result = await seekUser(parameters, req,res,next);
       if(result.length===0){
         throw new Error('Email or password incorrect, try again.')
       }

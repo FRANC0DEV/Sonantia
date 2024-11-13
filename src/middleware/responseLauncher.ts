@@ -10,7 +10,7 @@ export const successLauncher = (_req:Request, res:Response, message:string='', s
     )
 };
 
-export const errorLauncher = (_req:Request, res:Response, message:string='Error Interno', status:number=500)=>{
+export const errorLauncher = (_req:Request, res:Response, message:string='Internal Error. Try again later...', status:number=500)=>{
     res.status(status).send(
         {
             error:true,

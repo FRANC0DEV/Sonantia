@@ -19,3 +19,12 @@ export const createUserBodySchema = z.object(
         ),
     }
 );
+
+export const loginUserSchema = z.object(
+    {
+        email:z.string().email(
+            {message:'Invalid field, send a proper email'}
+        ),
+        password:z.string().min(1,{message:'You must send a password'})
+    }
+)

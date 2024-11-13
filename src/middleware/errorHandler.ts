@@ -7,8 +7,7 @@ export const errorHandler = (err: unknown, req: Request, res: Response, _next: N
       errorLauncher(req, res, `${err.code}: ${err.field}`, 400);
     } else if (err instanceof ZodError) {
       const errorDetails = err.errors.map(e => ({
-        path: e.path,
-        message: e.message,
+        message: e.code==="invalid_type"?`you must send a ${e.path}`:e.message,
       }));
       errorLauncher(req, res, JSON.stringify(errorDetails), 400);
     } else if (err instanceof Error) {

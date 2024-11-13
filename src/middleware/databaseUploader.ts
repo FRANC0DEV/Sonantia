@@ -4,15 +4,19 @@ import { successLauncher, errorLauncher } from './responseLauncher';
 import { createUserSqlParameters, seekUserSqlParameters } from '../models/userModels';
 // import { QueryResult } from 'mysql2';
 import { UserDB } from '../models/userModels';
+import { QueryError } from 'mysql2';
 const handleError = (err:unknown, next:NextFunction, _req:Request, res:Response)=>{
     if(err && typeof err === 'object' && 'code' in err && 'errno' in err && 'sqlState' in err && 'message' in err){
-        const errBody = {
-            code:err.code,
-            errno:err.errno,
-            sqlstate:err.sqlState,
-            message:err.message
-        };
-        errorLauncher(_req,res,JSON.stringify(errBody),500)
+        const queryErr = err as QueryError;
+        if (queryErr.sqlState!=='45000'){
+            errorLauncher(_req,res)
+        }
+        else{
+            const errBody = {
+                message:queryErr.message.split('/').filter((str)=>str!=="").map((e)=>({message:e}))
+            };
+            errorLauncher(_req,res,JSON.stringify(errBody),400)
+        }
     } else {
         next(err);
     }
@@ -21,17 +25,13 @@ const handleError = (err:unknown, next:NextFunction, _req:Request, res:Response)
 export const createUser = async (sqlParameters:createUserSqlParameters,_req:Request,res:Response,next:NextFunction)=>{
     try {
         await mySqlConnection.query(
-            `call sonantia.CreateUser(
-            '${sqlParameters.username}',
-            '${sqlParameters.name}',
-            '${sqlParameters.email}',
-            '${sqlParameters.password_hash}',
-            '${sqlParameters.profile_photo_url}')`
+            `call sonantia.CreateUser(?,?,?,?,?)`,
+            [sqlParameters.username,sqlParameters.name,sqlParameters.email,sqlParameters.password_hash,sqlParameters.profile_photo_url]
         );
-        successLauncher(_req,res,'Usuario Creado!',200)
+        successLauncher(_req,res,'User successfully created!',200)
     } catch (err) {
         handleError(err,next,_req,res,)
-    }    
+    }
 }
 
 export const seekUser = async(sqlParameters:seekUserSqlParameters,_req:Request,res:Response,next:NextFunction):Promise<UserDB[]>=>{

@@ -1,12 +1,13 @@
 import express, { Router, Response, Request, NextFunction } from 'express';
 import fs from 'fs/promises';
-import { createUserSqlParameters } from '../models/userModels';
+import { createUserSqlParameters, seekUserSqlParameters } from '../models/userModels';
 import { createUserBodySchema } from '../schemas/userSchemas';
 import { imgUploader } from '../middleware/multerUploader';
 import { uploadProfilePhoto } from '../middleware/cloudinaryUploader';
 import { errorHandler } from '../middleware/errorHandler';
 import { hashPassword } from '../middleware/passwordHasher';
-import { createUser } from '../middleware/databaseUploader';
+import { createUser, seekUser } from '../middleware/databaseUploader';
+import { comparePassword } from '../middleware/passwordHasher';
 const userRouter: Router = express.Router();
 /*----Routing----*/
 userRouter.post(
@@ -28,7 +29,7 @@ userRouter.post(
         password_hash:hashed_password,
         profile_photo_url:photo_url
       }
-      console.log(sqlParameters);//probar
+      // console.log(sqlParameters);//probar
       // Almacenar metadata en BD,
       await createUser(sqlParameters,req,res,next)
     } catch (err: unknown) {
@@ -46,6 +47,32 @@ userRouter.post(
     }
   }
 );
+
+/*Login endpoint*/
+userRouter.post(
+  '/login',
+  async (req:Request, res:Response, next:NextFunction)=>{
+    try {
+      //first we obtain the username and password from the user
+      const body:seekUserSqlParameters = req.body;
+      //then we must see if the user exists or not
+      const result = await seekUser(body, req,res,next);
+      if(result.length===0){
+        throw new Error('Email or password incorrect, try again.')
+      }
+      const user = result[0];
+      //after that, we must check if the password is correct
+      const match = await comparePassword(body.password,user.password_hash);
+      if(!match){
+        throw new Error('Email or password incorrect, try again.')
+      }
+      //from here, email and password are correct
+      res.status(200).json(user);
+    } catch (err) {
+      next(err);
+    }
+  }
+)
 
 // Middleware global de manejo de errores
 userRouter.use(errorHandler);

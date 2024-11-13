@@ -20,6 +20,7 @@
   "homepage": "https://github.com/An3cd0Ta/Sonantia_Back#readme",
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.9.0",
     "dotenv": "16.4.5",
@@ -33,6 +34,7 @@
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
     "express": "4.21.1",
+    "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.11.4",
     "zod": "^3.23.8"

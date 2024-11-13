@@ -9,6 +9,7 @@ app.set('port', appConfig.port);
 app.get('/',(_req, res)=>{
     successLauncher(_req,res,'Bienvenido a Express.ts!',200)
 })
+app.use(express.json())
 /*Routers usage (endpoints)*/
 app.use('/api/users', userRouter);
 app.use('/api/artist',artistRouter);

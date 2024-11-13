@@ -1,6 +1,6 @@
 import express, { Router, Response, Request, NextFunction } from 'express';
 import fs from 'fs/promises';
-import { createUserSqlParameters, seekUserSqlParameters } from '../models/userModels';
+import { createUserSqlParameters, seekUserSqlParameters, userTokenInfo } from '../models/userModels';
 import { createUserBodySchema, loginUserSchema } from '../schemas/userSchemas';
 import { imgUploader } from '../middleware/multerUploader';
 import { uploadProfilePhoto } from '../middleware/cloudinaryUploader';
@@ -8,6 +8,8 @@ import { errorHandler } from '../middleware/errorHandler';
 import { hashPassword } from '../middleware/passwordHasher';
 import { createUser, seekUser } from '../middleware/databaseUploader';
 import { comparePassword } from '../middleware/passwordHasher';
+import { generateAccessToken,generateRefreshToken } from '../middleware/tokenhandler';
+import { successLauncher } from '../middleware/responseLauncher';
 const userRouter: Router = express.Router();
 /*----Routing----*/
 userRouter.post(
@@ -68,7 +70,17 @@ userRouter.post(
         throw new Error('Email or password incorrect, try again.')
       }
       //from here, email and password are correct
-      res.status(200).json(user);
+      const userTokenInfo:userTokenInfo ={
+        username:user.username,
+        name:user.name,
+        email:user.email,
+        profile_photo_url:user.profile_photo_url,
+        preferences:{interface_color:user.interface_color,profile_border_color:user.profile_border_color},
+        roles: user.roles.split(', ')
+      }
+      const accesstoken = generateAccessToken(userTokenInfo);
+      const refreshtoken = generateRefreshToken(userTokenInfo);
+      successLauncher(req,res,JSON.stringify({accesstoken,refreshtoken}),200)
     } catch (err) {
       next(err);
     }

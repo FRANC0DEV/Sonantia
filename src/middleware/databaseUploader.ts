@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import mySqlConnection from '../utils/mysqlConnection';
 import { successLauncher, errorLauncher } from './responseLauncher';
 import { createUserSqlParameters, seekUserSqlParameters } from '../models/userModels';
-// import { QueryResult } from 'mysql2';
 import { UserDB } from '../models/userModels';
 import { QueryError } from 'mysql2';
 const handleError = (err:unknown, next:NextFunction, _req:Request, res:Response)=>{

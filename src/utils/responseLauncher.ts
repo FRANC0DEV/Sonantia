@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { errResponse } from "../interfaces/errorModels";
+import { errResponse } from "../interfaces/errorInterfaces";
 export const successLauncher = (_req:Request, res:Response, message:any='', status:number=200)=>{
     res.setHeader('Content-Type','application/json')
     res.status(status).send(

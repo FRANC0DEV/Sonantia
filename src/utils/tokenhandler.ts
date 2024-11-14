@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { userTokenInfo } from '../interfaces/userModels';
+import { userTokenInfo } from '../interfaces/userInterfaces';
 import dotenv from 'dotenv';
 dotenv.config();
 export const generateAccessToken = (userInfo:userTokenInfo)=>{

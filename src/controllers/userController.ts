@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from 'express';
 import fs from 'fs/promises';
-import { createUserSqlParameters, seekUserSqlParameters, userTokenInfo } from '../interfaces/userModels';
+import { createUserSqlParameters, seekUserSqlParameters, userTokenInfo } from '../interfaces/userInterfaces';
 import { createUserBodySchema, loginUserSchema } from '../schemas/userSchemas';
 import {hashPassword,uploadProfilePhoto,createUser,seekUser,comparePassword,generateAccessToken,generateRefreshToken, successLauncher} from '../utils/index.utils'
 export const createNewUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -18,9 +18,10 @@ export const createNewUser = async (req: Request, res: Response, next: NextFunct
         email:body.email,
         password_hash:hashed_password,
         profile_photo_url:photo_url
-      }
+      };
       // Almacenar metadata en BD,
-      await createUser(sqlParameters,req,res/*,next*/)
+      await createUser(sqlParameters,/*req,res/*,next*/);
+      successLauncher(req,res,'User successfully created!',200);
     } catch (err: unknown) {
       next(err); // Pasa el error al manejador de errores
     } finally {

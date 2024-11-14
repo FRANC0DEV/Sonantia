@@ -1,7 +1,7 @@
 import { uploadProfilePhoto } from "./cloudinaryUploader";
 import { imgUploader, audioUploader } from "./multerUploader";
 import { errorHandler } from "./errorHandler";
-import { createUser, seekUser } from "./databaseUploader";
+import { createUser, seekUser } from "./databaseManager";
 import { hashPassword, comparePassword } from "./passwordHasher";
 import { errorLauncher, successLauncher } from "./responseLauncher";
 import { generateAccessToken, generateRefreshToken } from "./tokenhandler";

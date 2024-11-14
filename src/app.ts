@@ -20,6 +20,6 @@ app.use('/api/music',musicRouter);
 app.use(errorHandler);
 /*General error launcher in case client requests from an endpoint that doesn't exist*/
 app.use((_req, res)=>{
-    errorLauncher(_req,res,[{message:'El contenido que está buscando no existe'}],401)
+    errorLauncher(_req,res,[{message:'El contenido que está buscando no existe'}],404)
 })
 export default app;

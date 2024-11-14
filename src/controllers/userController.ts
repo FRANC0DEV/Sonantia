@@ -20,7 +20,7 @@ export const createNewUser = async (req: Request, res: Response, next: NextFunct
         profile_photo_url:photo_url
       }
       // Almacenar metadata en BD,
-      await createUser(sqlParameters,req,res,next)
+      await createUser(sqlParameters,req,res/*,next*/)
     } catch (err: unknown) {
       next(err); // Pasa el error al manejador de errores
     } finally {
@@ -42,7 +42,7 @@ export const login = async (req:Request, res:Response, next:NextFunction)=>{
       const body = loginUserSchema.parse(req.body);
       const parameters = body as seekUserSqlParameters;
       //then we must see if the user exists or not
-      const result = await seekUser(parameters, req,res,next);
+      const result = await seekUser(parameters/*, req,res/*,next*/);
       if(result.length===0){
         throw new Error('Email or password incorrect, try again.')
       }

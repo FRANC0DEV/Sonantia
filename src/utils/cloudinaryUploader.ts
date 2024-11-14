@@ -17,3 +17,5 @@ export const uploadProfilePhoto = async(req:Request,body:z.infer<typeof createUs
     }
     return '';
 }
+
+// export const deleteProfilePhoto = async(req:Request,)

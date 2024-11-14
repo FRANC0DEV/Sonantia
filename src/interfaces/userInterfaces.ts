@@ -5,12 +5,13 @@ export interface UserDB {
     email: string;
     roles: string;
     profile_photo_url: string;
+    profile_photo_public_id:string;
     password_hash: string;
     interface_color: string;
     profile_border_color: string;
 }
 
-export interface createUserSqlParameters extends Pick<UserDB,'username'|'name'|'email'|'password_hash'|'profile_photo_url'>{
+export interface createUserSqlParameters extends Pick<UserDB,'username'|'name'|'email'|'password_hash'|'profile_photo_url'|'profile_photo_public_id'>{
 }
 
 export interface seekUserSqlParameters extends Pick<UserDB,'email'>{
@@ -20,7 +21,12 @@ export interface seekUserSqlParameters extends Pick<UserDB,'email'>{
 interface userPreferences extends Pick<UserDB,'interface_color'|'profile_border_color'>{
 }
 
-export interface userTokenInfo extends Pick<UserDB,'username'|'name'|'email'|'profile_photo_url'>{
+interface userProfilePhoto extends Pick<UserDB, 'profile_photo_url'|'profile_photo_public_id'>{
+
+}
+
+export interface userTokenInfo extends Pick<UserDB,'username'|'name'|'email'>{
     roles:string[],
-    preferences:userPreferences
+    profile_photo:userProfilePhoto,
+    preferences:userPreferences,
 }

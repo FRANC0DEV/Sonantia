@@ -4,9 +4,9 @@ import path from "path";
 const imgStorage = multer.diskStorage(
     {
         destination:path.resolve(__dirname,'../../temp/img'),/*we are in proyect/src/middleware/middleware.ts*/
-        filename: (_req, file, callback) => {
+        filename: (_req, _file, callback) => {
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random()*1E9);
-            callback(null, uniqueSuffix + '-' + file.fieldname + '-' + file.originalname)
+            callback(null, uniqueSuffix)
         },
     }
 );
@@ -28,9 +28,9 @@ export const imgUploader = multer(
 const audioStorage = multer.diskStorage(
     {
         destination:path.resolve(__dirname,'../../temp/audio'),
-        filename: (_req, file, callback) => {
+        filename: (_req, _file, callback) => {
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random()*1E9);
-            callback(null, uniqueSuffix + '-' + file.fieldname + '-' + file.originalname)
+            callback(null, uniqueSuffix)
         },
     }
 )

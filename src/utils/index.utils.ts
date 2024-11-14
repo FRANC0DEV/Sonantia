@@ -1,4 +1,4 @@
-import { uploadProfilePhoto } from "./cloudinaryUploader";
+import { uploadProfilePhoto, deleteProfilePhoto } from "./cloudinaryManager";
 import { imgUploader, audioUploader } from "./multerUploader";
 import { errorHandler } from "./errorHandler";
 import { createUser, seekUser } from "./databaseManager";
@@ -7,7 +7,8 @@ import { errorLauncher, successLauncher } from "./responseLauncher";
 import { generateAccessToken, generateRefreshToken } from "./tokenhandler";
 
 export {
-    uploadProfilePhoto, 
+    uploadProfilePhoto,
+    deleteProfilePhoto,
     imgUploader, 
     audioUploader, 
     errorHandler, 

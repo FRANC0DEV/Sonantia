@@ -3,8 +3,8 @@ import { createUserSqlParameters, seekUserSqlParameters } from '../interfaces/us
 import { UserDB } from '../interfaces/userInterfaces';
 export const createUser = async (sqlParameters:createUserSqlParameters)=>{
     await mySqlConnection.query(
-        `call sonantia.CreateUser(?,?,?,?,?)`,
-        [sqlParameters.username,sqlParameters.name,sqlParameters.email,sqlParameters.password_hash,sqlParameters.profile_photo_url]
+        `call sonantia.CreateUser(?,?,?,?,?,?)`,
+        [sqlParameters.username,sqlParameters.name,sqlParameters.email,sqlParameters.password_hash,sqlParameters.profile_photo_url,sqlParameters.profile_photo_public_id]
     );
 }
 

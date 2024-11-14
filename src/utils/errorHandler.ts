@@ -30,4 +30,5 @@ export const errorHandler = (err: unknown, req: Request, res: Response, _next: N
       console.error('Unexpected error:', err);
       errorLauncher(req, res, [{message:'An unexpected error occurred'}], 500);
     }
+    console.log(err);
 }

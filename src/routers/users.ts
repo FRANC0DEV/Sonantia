@@ -190,7 +190,7 @@ userRouter.post('/login', login);
  */
 
 /*update profile endpoint*/
-userRouter.put('/update',(req:Request,res,next)=>{verifyAuthorization(req,res,next,'Listener');}, (_req,res)=>{res.status(200).json({message:"Reached!"})})
+userRouter.put('/update',(req:Request,res,next)=>{verifyAuthorization(req,res,next,'Listener');}, imgUploader.single('profile-photo'),)
 /**
  * @swagger
  * /api/users/update:

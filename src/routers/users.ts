@@ -5,7 +5,7 @@ import { verifyAuthorization } from '../middleware/index.middleware';
 const userRouter: Router = express.Router();
 /*----Routing----*/
 /*create endpoint*/
-userRouter.post('/create', imgUploader.single('profile-photo'), createNewUser);
+userRouter.post('/create', createNewUser);
 /**
  * @swagger
  * /api/users/create:
@@ -15,31 +15,23 @@ userRouter.post('/create', imgUploader.single('profile-photo'), createNewUser);
  *       - Usuarios
  *     requestBody:
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
  *               username:
  *                 type: string
- *                 description: nombre de usuario
  *                 required: true
  *               name:
  *                 type: string
- *                 description: nombre del usuario
  *                 required: true
  *               email:
  *                 type: string
  *                 format: email
- *                 description: correo electronico del nuevo usuario
  *                 required: true
  *               password:
  *                 type: string
- *                 description: contraseña del nuevo usuario
  *                 required: true
- *               profile-photo:
- *                 type: file
- *                 description: Foto de perfil (opcional)
- *                 required: false
  *     responses:
  *       200:
  *         description: Cuenta creada con éxito
@@ -77,7 +69,7 @@ userRouter.post('/create', imgUploader.single('profile-photo'), createNewUser);
  *                      properties:
  *                        message:
  *                          type: string
- *                          example: "Email already used"
+ *                          example: "Correo ya en uso"
  *       500:
  *         description: Error interno en el servidor
  *         content:
@@ -190,7 +182,7 @@ userRouter.post('/login', login);
  */
 
 /*update profile endpoint*/
-userRouter.put('/update',(req:Request,res,next)=>{verifyAuthorization(req,res,next,'Listener');}, imgUploader.single('profile-photo'),updateProfile)
+userRouter.put('/update',(req:Request,res,next)=>{verifyAuthorization(req,res,next,'Listener');}, imgUploader.single('profile-photo'),updateProfile);
 /**
  * @swagger
  * /api/users/update:
@@ -206,17 +198,23 @@ userRouter.put('/update',(req:Request,res,next)=>{verifyAuthorization(req,res,ne
  *           schema:
  *             type: object
  *             properties:
+ *               interface_color:
+ *                 type: string
+ *                 description: Color de la interfaz en formato hexadecimal
+ *               profile_border_color:
+ *                 type: string
+ *                 description: Color de borde de perfil en formato hexadecimal
  *               password:
  *                 type: string
- *                 description: nueva contraseña del usuario
+ *                 description: nueva contraseña del usuario (opcional)
  *                 required: true
  *               profile-photo:
  *                 type: file
- *                 description: nueva photo de perfil
+ *                 description: nueva foto de perfil
  *                 required: false
  *     responses:
  *       200:
- *         description: Inicio de sesión exitoso
+ *         description: Datos actualizados con éxito
  *         content:
  *            application/json:
  *              schema:
@@ -231,14 +229,20 @@ userRouter.put('/update',(req:Request,res,next)=>{verifyAuthorization(req,res,ne
  *                  body:
  *                    type: object
  *                    properties:
- *                      accesstoken:
+ *                      message: 
  *                          type: string
- *                          example: "sdncahsisndfvknbfxd"
- *                      refreshtoken:
- *                          type: string
- *                          example: "aaijhsygsdvhbdjvhbh"
+ *                          example: "Datos actualizados correctamente"
+ *                      body:
+ *                          type: object
+ *                          properties:
+ *                             newAccessToken:
+ *                                type: string
+ *                                example: "sdncahsisndfvknbfxd"
+ *                             newRefreshToken:
+ *                                type: string
+ *                                example: "aaijhsygsdvhbdjvhbh"
  *       400:
- *         description: Error de inicio de sesión
+ *         description: Error al actualizar los datos
  *         content:
  *            application/json:
  *              schema:
@@ -257,7 +261,7 @@ userRouter.put('/update',(req:Request,res,next)=>{verifyAuthorization(req,res,ne
  *                      properties:
  *                        message:
  *                          type: string
- *                          example: "Email or password incorrect."
+ *                          example: "El color de interfaz no está en formato hexadecimal"
  *       500:
  *         description: Error interno en el servidor
  *         content:
@@ -280,4 +284,5 @@ userRouter.put('/update',(req:Request,res,next)=>{verifyAuthorization(req,res,ne
  *                          type: string
  *                          example: "Internal server error"
  */
+
 export default userRouter;

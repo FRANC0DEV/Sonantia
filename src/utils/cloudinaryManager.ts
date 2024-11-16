@@ -47,9 +47,8 @@ export const updateProfilePhoto = async (req:Request):Promise<cloudImgData>=>{
                     upload_preset:'sonantia_profile_photo',
                 }
             )
-            if(userPayload.profile_photo.profile_photo_public_id==='sonantia/Users/Profile_Photos/default'){
-                return {photo_url:cloudRes.secure_url, photo_public_id:cloudRes.public_id};
-            }
+            return {photo_url:cloudRes.secure_url, photo_public_id:cloudRes.public_id};
+            /*important to return the url since this one contains the link of the asset but in its lastest version */
         }
         return {photo_url:'',photo_public_id:''}
     } catch (error) {

@@ -4,10 +4,10 @@ export const createUserBodySchema = z.object(
     {
         username:z.string().regex(
             /^(?!\d+$)[\p{L}\p{N}_]{8,30}$/gu,
-            {message:'Username must have 8-30 characters (could include \'_\'), must include at least one letter and one number'}
+            {message:'Username must have 8-30 characters (could include \'_\'), must include at least one letter and one number, whitespace characters not admitted'}
         ),
         name:z.string().regex(
-            /^[\p{L}]{2,30}$/gu,
+            /^[\p{L} ]{2,30}$/gu,
             {message:'Name must have 2-30 characters in the following range: a-z'}
         ),
         email:z.string().email(
@@ -34,14 +34,14 @@ export const updateUserBodySchema = z.object(
         profile_border_color: z.string().regex(
             /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
             {
-                message:'Must be in HEX format'   
+                message:'The profile border color must be in HEX format'   
             }
 
         ).optional(),
         interface_color: z.string().regex(
             /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
             {
-                message:'Must be in HEX format'   
+                message:'The interface color must be in HEX format'   
             }
 
         ).optional(),

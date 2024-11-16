@@ -2,45 +2,28 @@ import { Response, Request, NextFunction } from 'express';
 import fs from 'fs/promises';
 import { createUserSqlParameters, seekUserSqlParameters,updateUserSqlParameters, userTokenInfo,userPayload, UserDB, /*UserDB*/ } from '../interfaces/userInterfaces';
 import { createUserBodySchema, loginUserBodySchema, updateUserBodySchema } from '../schemas/userSchemas';
-import {hashPassword,uploadProfilePhoto,createUser,seekUser,updateUser,comparePassword,generateAccessToken,generateRefreshToken, successLauncher, deleteProfilePhoto,updateProfilePhoto} from '../utils/index.utils'
-import { cloudImgData } from '../interfaces/cloudResInterfaces';
+import {hashPassword,/*uploadProfilePhoto,*/createUser,seekUser,updateUser,comparePassword,generateAccessToken,generateRefreshToken, successLauncher, /*deleteProfilePhoto,*/updateProfilePhoto} from '../utils/index.utils'
+// import { cloudImgData } from '../interfaces/cloudResInterfaces';
 // import { QueryResult } from 'mysql2';
 export const createNewUser = async (req: Request, res: Response, next: NextFunction) => {
-  let imgInCloud = false;
-  let cloudResponse:cloudImgData = {photo_url:'',photo_public_id:''};
   try {
     // Valida el cuerpo (metadata)
     const body = createUserBodySchema.parse(req.body);
     //parallel promise execution
-    const responses = await Promise.all([
-      hashPassword(body.password),//password hashing
-      uploadProfilePhoto(req, body)//photo uploading on cloud
-    ]);
-    cloudResponse=responses[1];
-    if(cloudResponse.photo_public_id!=='') {
-      imgInCloud = true;
-    }
+    const hashed_password = await hashPassword(body.password);
     //once both promises are completed, we can execute the code below
     const sqlParameters:createUserSqlParameters = {
       username:body.username,
       name:body.name,
       email:body.email,
-      password_hash:responses[0],
-      profile_photo_url:cloudResponse.photo_url,
-      profile_photo_public_id:cloudResponse.photo_public_id
+      password_hash:hashed_password,
+      profile_photo_url:'',
+      profile_photo_public_id:''
     };
     // Storing metadata in the database,
     await createUser(sqlParameters);
     successLauncher(req,res,'User successfully created!',200);
   } catch (err: unknown) {
-    //deleting photo from cloudinary in case it was already uploaded, this is executed while we give the err response
-    if (imgInCloud){
-      deleteProfilePhoto(cloudResponse.photo_public_id)
-      .then(()=>{console.log('Photo successfully deleted from cloudinary');})
-      .catch(
-        (error)=>{console.log('Error while trying to delete the profile photo from cloudinary: ', error);}
-      );
-    }
     next(err); // Passing principal error to the handler
   } finally {
     //   Erasing local file
@@ -105,8 +88,6 @@ export const updateProfile = async (req:Request, res:Response, next:NextFunction
     }
     const result:UserDB[]= await updateUser(sqlParameters);
     const userData = result[0];
-    // console.log(userData);
-    // console.log(userData.roles.split(', '))
     const newUserTokenInfo:userTokenInfo ={
       username:userData.username,
       name:userData.name,
@@ -122,8 +103,14 @@ export const updateProfile = async (req:Request, res:Response, next:NextFunction
       newAccessToken: newAccessToken,
       newRefreshToken: newRefreshToken
     }
-    successLauncher(req,res,message /*result*/,200);
+    successLauncher(req,res,message,200);
   } catch (error) {
     next(error);
+  } finally{
+    if (req.file) {
+      fs.unlink(req.file.path)
+      .then(()=>{console.log('Local profile photo successfully deleted');})
+      .catch((err)=>{console.log('Error while deleting the file: ', err)})
+    }
   }
 }

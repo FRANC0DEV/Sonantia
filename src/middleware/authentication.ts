@@ -1,6 +1,6 @@
 import { NextFunction, Response , Request} from "express";
 import { errorLauncher } from "../utils/index.utils";
-import { userTokenInfo } from "../interfaces/userInterfaces";
+import { userPayload } from "../interfaces/userInterfaces";
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
 dotenv.config();
@@ -14,7 +14,7 @@ export const verifyAuthorization = (req:Request, res:Response, next:NextFunction
         if(err){
             return errorLauncher(req,res,[{message:'Access Denied, token incorrect or expired'}],401);
         }
-        const payload = user as userTokenInfo;
+        const payload = user as userPayload;
         if(!payload.roles.includes(requiredRole)){
             return errorLauncher(req,res,[{message:'Access Denied, you cannot see this content'}],403);
         }

@@ -24,7 +24,7 @@ export const errorHandler = (err: unknown, req: Request, res: Response, _next: N
       }
     }
     else if (err instanceof Error) {
-      errorLauncher(req, res, [{message: err.message}], 400);
+      errorLauncher(req, res, [{message: err.message}], 500);
     } 
     else {
       console.error('Unexpected error:', err);

@@ -18,6 +18,13 @@ export interface seekUserSqlParameters extends Pick<UserDB,'email'>{
     password:string
 }
 
+export interface updateUserSqlParameters extends Pick<UserDB,'username'>{
+    new_password_hash:string,
+    new_profile_border_color:string,
+    new_interface_color:string,
+    new_photo_url:string,
+    new_photo_public_id:string,
+}
 interface userPreferences extends Pick<UserDB,'interface_color'|'profile_border_color'>{
 }
 
@@ -29,4 +36,9 @@ export interface userTokenInfo extends Pick<UserDB,'username'|'name'|'email'>{
     roles:string[],
     profile_photo:userProfilePhoto,
     preferences:userPreferences,
+}
+
+export interface userPayload extends userTokenInfo{
+    iat:number,
+    exp:number
 }

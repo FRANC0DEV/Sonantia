@@ -3,19 +3,19 @@ import { z } from 'zod';
 export const createUserBodySchema = z.object(
     {
         username:z.string().regex(
-            /^(?=.*[a-zA-Z])[a-zA-Z\d_\-]{8,30}$/,
-            {message:'Username must have 8-30 characters including 1 letter at least, might include (\'_\' or \'-\') and numbers'}
+            /^(?!\d+$)[\p{L}\p{N}_]{8,30}$/gu,
+            {message:'Username must have 8-30 characters (could include \'_\'), must include at least one letter and one number'}
         ),
         name:z.string().regex(
-            /^[a-zA-Z]{2,30}$/,
-            {message:'Name must have between 2 and 30 characters in the following range: a-z'}
+            /^[\p{L}]{2,30}$/gu,
+            {message:'Name must have 2-30 characters in the following range: a-z'}
         ),
         email:z.string().email(
             {message:'Invalid field, send a proper email'}
         ),
         password:z.string().regex(
-            /^[a-zA-Z\d]{8,20}$/,
-            { message: "Password must be between 8 and 20 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character." }
+            /^(?=.*\d)(?=.*[!@#$\-%^&*])[\p{L}\p{N}_\-!@#$%^&*]{8,20}$/gu,
+            { message: "Password must have 8-20 characters, must contain at least one letter, one number, and one special character(!,@,#,$,%,^,& or *)" }
         ),
     }
 );
@@ -31,12 +31,23 @@ export const loginUserBodySchema = z.object(
 
 export const updateUserBodySchema = z.object(
     {
-        username:z.string().regex(
-            /^$/
+        profile_border_color: z.string().regex(
+            /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
+            {
+                message:'Must be in HEX format'   
+            }
+
+        ).optional(),
+        interface_color: z.string().regex(
+            /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
+            {
+                message:'Must be in HEX format'   
+            }
+
         ).optional(),
         password:z.string().regex(
-            /^$/
+            /^(?=.*\d)(?=.*[!@#$\-%^&*])[\p{L}\p{N}_\-!@#$%^&*]{8,20}$/gu,
+            { message: "Password must have 8-20 characters, must contain at least one letter, one number, and one special character(!,@,#,$,%,^,& or *)" }
         ).optional(),
-
     }
 )

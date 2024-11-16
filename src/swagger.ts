@@ -13,6 +13,6 @@ const options:Options = {
 }
 
 const swaggerSpec = swaggerJSDoc(options);
-console.log(swaggerSpec);
+// console.log(swaggerSpec);
 
 export default swaggerSpec;

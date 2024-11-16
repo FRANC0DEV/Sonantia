@@ -1,35 +1,59 @@
 import cloudinary from '../connections/cloudinaryConfig';
-import { createUserBodySchema } from '../schemas/userSchemas';
+import { createUserBodySchema,} from '../schemas/userSchemas';
 import { Request } from 'express';
 import { z } from 'zod';
 import { cloudImgData } from '../interfaces/cloudResInterfaces';
+import { userPayload } from '../interfaces/userInterfaces';
 export const uploadProfilePhoto = async(req:Request,body:z.infer<typeof createUserBodySchema>):Promise<cloudImgData>=>{
     if(req.file){
-        const cloudRes = await cloudinary.uploader.upload(
-            req.file.path,
-            {
-              folder:'/sonantia/users/Profile_Photos',
-              resource_type:'image',
-              public_id:`${req.file.filename}-${body.username}-Profile_Photo`,
-              upload_preset:'sonantia_profile_photo',
-            }
-        )
-        return {photo_url:cloudRes.secure_url, photo_public_id:cloudRes.public_id};
+        try {
+            const cloudRes = await cloudinary.uploader.upload(
+                req.file.path,
+                {
+                  folder:'/sonantia/users/Profile_Photos',
+                  resource_type:'image',
+                  public_id:`${body.username}-Profile_Photo`,
+                  upload_preset:'sonantia_profile_photo',
+                }
+            );
+            return {photo_url:cloudRes.secure_url, photo_public_id:cloudRes.public_id};
+        } catch (error) {
+            console.log('Error while uploading the photo to cloudinary: ', error);
+            throw new Error('Something wrong happened, try again later...');
+        }
     }
     return {photo_url:'', photo_public_id:''};
 }
 
-export const deleteProfilePhoto = async(imgData:cloudImgData)=>{
+export const deleteProfilePhoto = async(photo_public_id:string)=>{
+    return cloudinary.uploader.destroy(
+        photo_public_id,
+        {
+            resource_type:'image',
+        }
+    );
+}
+
+export const updateProfilePhoto = async (req:Request):Promise<cloudImgData>=>{
     try {
-        await cloudinary.uploader.destroy(
-            imgData.photo_public_id,
-            {
-                resource_type:'image',
+        if (req.file) {
+            const userPayload = req.user as userPayload;
+            const cloudRes=await cloudinary.uploader.upload(
+                req.file.path,
+                {
+                    folder:'/sonantia/users/Profile_Photos',
+                    resource_type:'image',
+                    public_id:`${userPayload.username}-Profile_Photo`,/*we cannot put the entire public id saved on the database cause this is not the publicID that will be show in cloud, the folder path will be added by default befor this string. If we do, we will not reference the photo correctly, since we are saying that the id is <path>/<path>/<this string>*/
+                    upload_preset:'sonantia_profile_photo',
+                }
+            )
+            if(userPayload.profile_photo.profile_photo_public_id==='sonantia/Users/Profile_Photos/default'){
+                return {photo_url:cloudRes.secure_url, photo_public_id:cloudRes.public_id};
             }
-        )
-        console.log('Photo successfully deleted from cloudinary');
-        
+        }
+        return {photo_url:'',photo_public_id:''}
     } catch (error) {
-        console.log('Error while deleting the photo from cloud: ', error);
+        console.log('Error while updating the profile photo on cloudinary: ',error);
+        throw new Error('Something happened while updating the profile photo, try again later...');   
     }
 }

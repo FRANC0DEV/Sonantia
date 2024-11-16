@@ -1,7 +1,7 @@
-import { uploadProfilePhoto, deleteProfilePhoto } from "./cloudinaryManager";
+import { uploadProfilePhoto, deleteProfilePhoto,updateProfilePhoto } from "./cloudinaryManager";
 import { imgUploader, audioUploader } from "./multerUploader";
 import { errorHandler } from "./errorHandler";
-import { createUser, seekUser } from "./databaseManager";
+import { createUser, seekUser, updateUser } from "./databaseManager";
 import { hashPassword, comparePassword } from "./passwordHasher";
 import { errorLauncher, successLauncher } from "./responseLauncher";
 import { generateAccessToken, generateRefreshToken } from "./tokenhandler";
@@ -9,11 +9,13 @@ import { generateAccessToken, generateRefreshToken } from "./tokenhandler";
 export {
     uploadProfilePhoto,
     deleteProfilePhoto,
+    updateProfilePhoto,
     imgUploader, 
     audioUploader, 
     errorHandler, 
     createUser, 
     seekUser,
+    updateUser,
     hashPassword,
     comparePassword,
     errorLauncher,

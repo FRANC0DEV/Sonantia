@@ -1,6 +1,6 @@
 import express, { Request, Router } from 'express';
 import { imgUploader } from '../utils/index.utils';
-import { createNewUser, login } from '../controllers/userController';
+import { createNewUser, login,updateProfile } from '../controllers/userController';
 import { verifyAuthorization } from '../middleware/index.middleware';
 const userRouter: Router = express.Router();
 /*----Routing----*/
@@ -190,7 +190,7 @@ userRouter.post('/login', login);
  */
 
 /*update profile endpoint*/
-userRouter.put('/update',(req:Request,res,next)=>{verifyAuthorization(req,res,next,'Listener');}, imgUploader.single('profile-photo'),)
+userRouter.put('/update',(req:Request,res,next)=>{verifyAuthorization(req,res,next,'Listener');}, imgUploader.single('profile-photo'),updateProfile)
 /**
  * @swagger
  * /api/users/update:
@@ -206,10 +206,6 @@ userRouter.put('/update',(req:Request,res,next)=>{verifyAuthorization(req,res,ne
  *           schema:
  *             type: object
  *             properties:
- *               username:
- *                 type: string
- *                 description: nuevo nombre de usuario
- *                 required: true
  *               password:
  *                 type: string
  *                 description: nueva contraseña del usuario

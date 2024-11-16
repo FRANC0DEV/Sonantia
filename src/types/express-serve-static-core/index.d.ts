@@ -1,4 +1,4 @@
-import { userTokenInfo } from "../interfaces/userInterfaces";
+import {userPayload} from "../interfaces/userInterfaces";
 /**
  * tell typescript to grab the Request type from express
  * and add the user property using declaration merging
@@ -8,7 +8,7 @@ export {}
 declare global{
     namespace Express{
         interface Request{
-            user?:userTokenInfo,
+            user?:userPayload,
         }
     }
 }

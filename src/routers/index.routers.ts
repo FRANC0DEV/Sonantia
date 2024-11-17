@@ -1,8 +1,8 @@
 import userRouter from "./users";
 import artistRouter from "./artist";
-import musicRouter from "./music";
-
-export {userRouter,artistRouter,musicRouter};
+import songRouter from "./songs";
+import listenerRouter from "./listeners";
+export {userRouter,artistRouter,songRouter, listenerRouter};
 
 //creating swagger security component
 /**

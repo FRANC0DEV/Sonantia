@@ -1,6 +1,6 @@
 import express from 'express';
 import { Router } from 'express';
-const musicRouter:Router = express.Router();
+const songRouter:Router = express.Router();
 /*----Routing----*/
 
-export default musicRouter;
+export default songRouter;

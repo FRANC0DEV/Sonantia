@@ -1,4 +1,5 @@
 import mySqlConnection from '../connections/mysqlConnection';
+import { getCollectionsByUserSqlParameters, musicCollectionDB } from '../interfaces/musicCollectionInterfaces';
 import { createUserSqlParameters, seekUserSqlParameters, updateUserSqlParameters } from '../interfaces/userInterfaces';
 import { UserDB } from '../interfaces/userInterfaces';
 export const createUser = async (sqlParameters:createUserSqlParameters)=>{
@@ -36,5 +37,37 @@ export const updateUser = async (sqlParameters:updateUserSqlParameters):Promise<
     } catch (error) {
         console.log('Error while updating user on the database: ', error);
         throw new Error('Something wrong happened, try again later...');
+    }
+}
+
+export const getPlaylistByUser = async(sqlParameters:getCollectionsByUserSqlParameters)=>{
+    try {
+        const [result] = await mySqlConnection.query(
+            `
+            select * from sonantia.view_usersXmusiccollections vumc 
+            where vumc.username=? and vumc.Relation=?
+            `,
+            [sqlParameters.username,'Created Playlist']
+        );
+        return result as musicCollectionDB[];
+    } catch (error) {
+        console.log('Error while obtaining user\'s playlists: ', error);
+        throw new Error('We couldn\'t obtain user\'s playlists');
+    }
+}
+
+export const getSavedAlbumsByUser = async(sqlParameters:getCollectionsByUserSqlParameters)=>{
+    try {
+        const [result] = await mySqlConnection.query(
+            `
+            select * from sonantia.view_usersXmusiccollections vumc 
+            where vumc.username=? and vumc.Relation=?
+            `,
+            [sqlParameters.username,'Saved Album']
+        );
+        return result as musicCollectionDB[];
+    } catch (error) {
+        console.log('Error while obtaining user\'s saved albums: ', error);
+        throw new Error('We couldn\'t obtain user\'s saved albums');
     }
 }

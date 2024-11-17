@@ -1,5 +1,6 @@
-import { verifyAuthorization } from "./authentication";
+import { verifyAuthorization, renovateToken } from "./authentication";
 
 export {
     verifyAuthorization,
+    renovateToken
 }

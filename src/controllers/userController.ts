@@ -1,10 +1,8 @@
 import { Response, Request, NextFunction } from 'express';
 import fs from 'fs/promises';
-import { createUserSqlParameters, seekUserSqlParameters,updateUserSqlParameters, userTokenInfo,userPayload, UserDB, /*UserDB*/ } from '../interfaces/userInterfaces';
+import { createUserSqlParameters, seekUserSqlParameters,updateUserSqlParameters, userTokenInfo,userPayload, UserDB} from '../interfaces/userInterfaces';
 import { createUserBodySchema, loginUserBodySchema, updateUserBodySchema } from '../schemas/userSchemas';
-import {hashPassword,/*uploadProfilePhoto,*/createUser,seekUser,updateUser,comparePassword,generateAccessToken,generateRefreshToken, successLauncher, /*deleteProfilePhoto,*/updateProfilePhoto} from '../utils/index.utils'
-// import { cloudImgData } from '../interfaces/cloudResInterfaces';
-// import { QueryResult } from 'mysql2';
+import {hashPassword, createUser,seekUser,updateUser,comparePassword,generateAccessToken,generateRefreshToken, successLauncher, updateProfilePhoto} from '../utils/index.utils'
 export const createNewUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Valida el cuerpo (metadata)

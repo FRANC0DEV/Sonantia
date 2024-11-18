@@ -2,6 +2,7 @@ import mySqlConnection from '../connections/mysqlConnection';
 import { getCollectionsByUserSqlParameters, musicCollectionDB } from '../interfaces/musicCollectionInterfaces';
 import { createUserSqlParameters, seekUserSqlParameters, updateUserSqlParameters } from '../interfaces/userInterfaces';
 import { UserDB } from '../interfaces/userInterfaces';
+import { songPlaylistDB, songAlbumDB } from '../interfaces/songInterfaces';
 export const createUser = async (sqlParameters:createUserSqlParameters)=>{
     return mySqlConnection.query(
         `call sonantia.CreateUser(?,?,?,?,?,?)`,
@@ -69,5 +70,36 @@ export const getSavedAlbumsByUser = async(sqlParameters:getCollectionsByUserSqlP
     } catch (error) {
         console.log('Error while obtaining user\'s saved albums: ', error);
         throw new Error('We couldn\'t obtain user\'s saved albums');
+    }
+}
+
+export const getSongsByPlaylist = async (playlist_id:number)=>{
+    try {
+        const [result] = await mySqlConnection.query(
+            `
+            select * from sonantia.view_songsXplaylist vsp
+            where vsp.id_playlist=?
+            `,
+            [playlist_id]
+        );
+        return result as songPlaylistDB[];
+    } catch (error) {
+        console.log('Error while obtaining the songs: ', error);
+        throw new Error('We couldn\'t obtain the songs')        
+    }
+}
+
+export const getSongsByAlbum = async (album_id:number)=>{
+    try {
+        const [result] = await mySqlConnection.query(
+            `
+            select * from sonantia.view_songsXalbums vsa where vsa.id_album=?
+            `,
+            [album_id]
+        );
+        return result as songAlbumDB[];
+    } catch (error) {
+        console.log('Error while obtaining the songs: ', error);
+        throw new Error('We couldn\'t obtain the songs')  
     }
 }

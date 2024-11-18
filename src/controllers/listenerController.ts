@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { userPayload } from '../interfaces/userInterfaces';
 import { getCollectionsByUserSqlParameters,playlistReturnInfo, savedAlbumReturnInfo } from '../interfaces/musicCollectionInterfaces';
-import { getPlaylistByUser,getSavedAlbumsByUser } from '../utils/databaseManager';
-import { successLauncher } from "../utils/responseLauncher";
-
+import { getPlaylistByUser,getSavedAlbumsByUser, successLauncher } from '../utils/index.utils';
 export const getUserPlaylists = async (req:Request, res:Response, next:NextFunction)=>{
     try {
         const userPayload:userPayload = req.user;

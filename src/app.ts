@@ -16,7 +16,7 @@ app.use('/api/docs', swaggerUi.serve,swaggerUi.setup(swaggerSpec))
 app.use('/api/users', userRouter);
 app.use('/api/listeners',listenerRouter);
 app.use('/api/artist',artistRouter);
-app.use('/api/music',songRouter);
+app.use('/api/songs',songRouter);
 /*error handler in case something haves in each router*/
 app.use(errorHandler);
 /*General error launcher in case client requests from an endpoint that doesn't exist*/

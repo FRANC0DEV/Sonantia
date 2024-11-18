@@ -20,7 +20,10 @@ export const verifyAuthorization = (req:Request, res:Response, next:NextFunction
         }
         req.user = payload;
         next();
-    });
+    });//dajnusainjda 
+    //adsasdsasda
+    // la ptmr como se q
+    //amsduahbdjsiaugv hdjoiahudvbjnabhd vnasjkibkmspfjd kcxzdjdc
 }
 
 export const renovateToken = (req:Request, res:Response)=>{

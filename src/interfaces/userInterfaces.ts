@@ -38,6 +38,8 @@ export interface userTokenInfo extends Pick<UserDB,'username'|'name'|'email'>{
     preferences:userPreferences,
 }
 
+export interface thirdUserInfo extends Omit<UserDB,'id_user'|'email'|'roles'|'profile_photo_public_id'|'password_hash'>{}
+
 export interface userPayload extends userTokenInfo{
     iat:number,
     exp:number

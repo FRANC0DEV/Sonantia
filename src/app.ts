@@ -1,6 +1,6 @@
 import express, { Express } from 'express';
 import { appConfig } from './config';
-import {userRouter,songRouter,artistRouter,listenerRouter} from './routers/index.routers'
+import {userRouter,songRouter,artistRouter,listenerRouter,genreRouter} from './routers/index.routers'
 import swaggerUi from 'swagger-ui-express'
 import swaggerSpec from './swagger';
 import { successLauncher, errorLauncher, errorHandler } from './utils/index.utils';
@@ -15,7 +15,8 @@ app.use(express.json())
 app.use('/api/docs', swaggerUi.serve,swaggerUi.setup(swaggerSpec))
 app.use('/api/users', userRouter);
 app.use('/api/listeners',listenerRouter);
-app.use('/api/artist',artistRouter);
+app.use('/api/artists',artistRouter);
+app.use('/api/genres',genreRouter)
 app.use('/api/songs',songRouter);
 /*error handler in case something haves in each router*/
 app.use(errorHandler);

@@ -22,3 +22,8 @@ export interface songAlbumDB extends songDB{
 export interface songReturnInfo extends Omit<songDB,'song_public_id'|'song_photo_public_id'|'song_type'|'owners'>{
     owners:string[]
 }
+
+export interface genreDB{
+    id_genre:number,
+    genre:string,
+}

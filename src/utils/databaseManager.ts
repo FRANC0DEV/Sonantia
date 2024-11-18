@@ -2,7 +2,7 @@ import mySqlConnection from '../connections/mysqlConnection';
 import { getCollectionsByUserSqlParameters, musicCollectionDB } from '../interfaces/musicCollectionInterfaces';
 import { createUserSqlParameters, seekUserSqlParameters, updateUserSqlParameters } from '../interfaces/userInterfaces';
 import { UserDB } from '../interfaces/userInterfaces';
-import { songPlaylistDB, songAlbumDB } from '../interfaces/songInterfaces';
+import { songPlaylistDB, songAlbumDB, songDB, genreDB } from '../interfaces/songInterfaces';
 export const createUser = async (sqlParameters:createUserSqlParameters)=>{
     return mySqlConnection.query(
         `call sonantia.CreateUser(?,?,?,?,?,?)`,
@@ -85,7 +85,7 @@ export const getSongsByPlaylist = async (playlist_id:number)=>{
         return result as songPlaylistDB[];
     } catch (error) {
         console.log('Error while obtaining the songs: ', error);
-        throw new Error('We couldn\'t obtain the songs')        
+        throw new Error('We couldn\'t obtain the songs');        
     }
 }
 
@@ -100,6 +100,66 @@ export const getSongsByAlbum = async (album_id:number)=>{
         return result as songAlbumDB[];
     } catch (error) {
         console.log('Error while obtaining the songs: ', error);
-        throw new Error('We couldn\'t obtain the songs')  
+        throw new Error('We couldn\'t obtain the songs');  
+    }
+}
+
+export const getSongsByGenre = async (genre:string)=>{
+    try {
+        const [result] = await mySqlConnection.query(
+            `
+            select * from sonantia.view_songs vs where vs.genre=?
+            `,
+            [genre]
+        );
+        return result as songDB[];
+    } catch (error) {
+        console.log('Error while obtaining the songs: ', error);
+        throw new Error('We couldn\'t obtain the songs');
+    }
+}
+
+export const getSongsByArtist = async (artistUsername:string)=>{
+    try {
+        const [result] = await mySqlConnection.query(
+            `
+            select * from sonantia.view_songs vs where vs.owners REGEXP CONCAT(?,?,?)
+            `,
+            ['(^| )',artistUsername,'( |$)']
+        );
+        return result as songDB[];
+    } catch (error) {
+        console.log('Error while obtaining the songs: ', error);
+        throw new Error('We couldn\'t obtain the songs');
+    }
+}
+
+export const getGenres = async ()=>{
+    try {
+        const [result] = await mySqlConnection.query(
+            `
+            select * from sonantia.genres g order by g.id_genre
+            `
+        );
+        return result as genreDB[];
+    } catch (error) {
+        console.log('Error while obtaining the genres: ', error);
+        throw new Error('We couldn\'t obtain the genres');
+    }
+}
+
+export const getArtists = async()=>{
+    try {
+        const [result] = await mySqlConnection.query(
+            `
+            select * from sonantia.view_users u
+            where exists (select * from sonantia.users_roles ur where ur.id_user=u.id_user and ur.id_role=?)
+            `,
+            [2]
+        )
+        return result as UserDB[];
+    } catch (error) {
+        console.log('Error while obtaining the artists: ', error);
+        throw new Error('We couldn\'t obtain the artists');
     }
 }

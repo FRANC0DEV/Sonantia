@@ -7,8 +7,3 @@ const app_1 = __importDefault(require("./app"));
 app_1.default.listen(app_1.default.get('port'), () => {
     console.log(`Server listening at port ${app_1.default.get('port')}`);
 });
-app_1.default.get('/', (_req, res) => {
-    res.status(200).json({
-        message: 'Hello World in TS!',
-    });
-});

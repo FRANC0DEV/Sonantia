@@ -7,7 +7,7 @@ const mySqlConnection = mysql.createPool(
         user:process.env.MYSQL_USER,
         password:process.env.MYSQL_PASSWORD,
         database:process.env.MYSQL_DATABASE,
-        port:15870
+        port:14202
     }
 );
 export default mySqlConnection;

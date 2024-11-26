@@ -3,8 +3,15 @@ import { appConfig } from './config';
 import {userRouter,songRouter,artistRouter,listenerRouter,genreRouter} from './routers/index.routers'
 import swaggerUi from 'swagger-ui-express'
 import swaggerSpec from './swagger';
+import cors, {CorsOptions} from 'cors';
 import { successLauncher, errorLauncher, errorHandler } from './utils/index.utils';
+const options:CorsOptions ={
+    origin:"*",
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+    allowedHeaders: ['Content-Type', 'authorization', 'x-refresh-token'], // Encabezados permitidos
+} 
 const app:Express = express();
+app.use(cors(options));
 app.set('port', appConfig.port);
 /*Basic routing*/
 app.get('/',(_req, res)=>{
